@@ -12,7 +12,11 @@ const mongooseController = require("./data/mongoose");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
+const authMiddleware = require("./security/authorization.middleware");
+
 const app = express();
+
+const API_PREFIX = "/api";
 
 console.log("Connected to Database");
 
@@ -20,6 +24,10 @@ mongooseController.connect(app.locals).then(() => {
   // initialize mongoose
   const initializeData = mongooseController.initializeData;
   initializeData();
+
+  // Routes that need access to Mongo Information:
+  const loginRouter = require("./routes/login.js");
+  const registerRouter = require("./routes/register.js");
 
   // view engine setup
   app.set("views", path.join(__dirname, "views"));
@@ -33,10 +41,16 @@ mongooseController.connect(app.locals).then(() => {
   app.use(express.static(path.join(__dirname, "public")));
 
   app.use("/", indexRouter);
-  app.use("/users", usersRouter);
 
-  const productsRouter = require("./routes/products.routes");
-  app.use("/api/products", productsRouter);
+  app.use(`${API_PREFIX}/users/login`, loginRouter);
+  app.use(`${API_PREFIX}/users/register`, registerRouter);
+
+  app.use("/", authMiddleware);
+
+  app.use(`${API_PREFIX}/users`, usersRouter);
+
+  const productsRouter = require("./routes/products");
+  app.use(`${API_PREFIX}/products`, productsRouter);
 
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
