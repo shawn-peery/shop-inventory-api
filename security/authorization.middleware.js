@@ -1,3 +1,7 @@
+const jwt = require("jsonwebtoken");
+
+const JWT_KEY = process.env.JWT_KEY;
+
 module.exports = async (req, res, next) => {
   if (req === undefined) {
     console.error("Received request is undefined");

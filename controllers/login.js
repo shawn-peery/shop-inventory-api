@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 exports.login = (req, res) => {
   const body = req.body;
 
+  console.log(req);
+
   User.findOne({ username: body.username })
     .then((user) => {
       if (!user) {
