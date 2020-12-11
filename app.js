@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-// Testing
+// TESTING
 
 const createError = require("http-errors");
 const express = require("express");
