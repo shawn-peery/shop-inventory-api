@@ -1,5 +1,8 @@
 const User = require("../data/schemas/users.schema");
 
+const JWT_KEY = process.env.JWT_KEY;
+const jwt = require("jsonwebtoken");
+
 exports.register = (req, res) => {
   const body = req.body;
 
@@ -17,9 +20,20 @@ exports.register = (req, res) => {
         return;
       }
 
+      if (req.body.role === undefined) {
+        req.body.role = "user";
+      }
+
       const registeredUser = new User(body);
 
-      registeredUser.save().then(() => {
+      registeredUser.save().then(async () => {
+        // Attach Token
+        const token = await jwt.sign(
+          { _id: registeredUser._id, role: req.body.role },
+          JWT_KEY
+        );
+        res.set("auth", token);
+        res.set("Access-Control-Expose-Headers", "auth");
         res.status(200).json(registeredUser);
       });
     })
