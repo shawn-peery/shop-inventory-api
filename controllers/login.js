@@ -6,14 +6,20 @@ exports.login = async (req, res) => {
   const body = req.body;
 
   try {
-    const user = await User.findOne({ username: body["username/email"] });
-    const email = await User.findOne({ email: body["username/email"] });
+    const user = await User.findOne({
+      $or: [
+        { username: body["username/email"] },
+        { email: body["username/email"] },
+      ],
+    });
 
-    if (!user && !email) {
+    console.log("user");
+    console.log(user);
+    return;
+
+    if (!user) {
       res.status(400).send("Couldn't authenticate you.");
       return;
-    } else if (!user) {
-      user = email;
     }
 
     user.comparePassword(body.password, async function (err, isMatch) {
