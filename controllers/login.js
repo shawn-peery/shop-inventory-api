@@ -13,10 +13,6 @@ exports.login = async (req, res) => {
       ],
     });
 
-    console.log("user");
-    console.log(user);
-    return;
-
     if (!user) {
       res.status(400).send("Couldn't authenticate you.");
       return;
