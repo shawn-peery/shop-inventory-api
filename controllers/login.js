@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
       const token = await jwt.sign({ _id: user._id, role: user.role }, JWT_KEY);
       res.set("auth", token);
       res.set("Access-Control-Expose-Headers", "auth");
-      res.send({ msg: "Successfully Logged In" });
+      res.json(user);
     });
   } catch (err) {
     console.error("Error receiving request. Error:");

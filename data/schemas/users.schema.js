@@ -6,7 +6,12 @@ const SALT_WORK_FACTOR = 10;
 const UserSchema = new Schema({
   username: { type: String, required: true, index: { unique: true } },
   email: { type: String, required: true, index: { unique: true } },
-  password: { type: String, required: true },
+
+  // Using 'select' to avoid sending password to the front end. Need to use work around in
+  // answer section to overwrite this feature
+  // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu#answer-12096922
+  password: { type: String, required: true, select: false },
+
   role: { type: String, required: true },
 });
 
@@ -35,11 +40,20 @@ UserSchema.pre("save", function (next) {
   });
 });
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+UserSchema.methods.comparePassword = async function (candidatePassword, cb) {
+  const user = await User.findOne({ username: this.username }).select(
+    "password"
+  );
+
+  console.log("user");
+  console.log(user);
+
+  bcrypt.compare(candidatePassword, user.password, function (err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
 };
 
-module.exports = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+
+module.exports = User;
