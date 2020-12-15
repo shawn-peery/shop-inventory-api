@@ -25,8 +25,6 @@ exports.login = async (req, res) => {
         res.status(400).send(err);
       }
 
-      console.log(`${body.password}:`, isMatch);
-
       // Attach Token
       const token = await jwt.sign({ _id: user._id, role: user.role }, JWT_KEY);
       res.set("auth", token);

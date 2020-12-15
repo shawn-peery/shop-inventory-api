@@ -45,9 +45,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword, cb) {
     "password"
   );
 
-  console.log("user");
-  console.log(user);
-
   bcrypt.compare(candidatePassword, user.password, function (err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
