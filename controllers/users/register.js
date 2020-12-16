@@ -1,4 +1,4 @@
-const User = require("../data/schemas/users.schema");
+const User = require("../../data/schemas/users.schema");
 
 const JWT_KEY = process.env.JWT_KEY;
 const jwt = require("jsonwebtoken");

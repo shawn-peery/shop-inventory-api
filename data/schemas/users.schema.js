@@ -3,17 +3,20 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
-const UserSchema = new Schema({
-  username: { type: String, required: true, index: { unique: true } },
-  email: { type: String, required: true, index: { unique: true } },
+const UserSchema = new Schema(
+  {
+    username: { type: String, required: true, index: { unique: true } },
+    email: { type: String, required: true, index: { unique: true } },
 
-  // Using 'select' to avoid sending password to the front end. Need to use work around in
-  // answer section to overwrite this feature
-  // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu#answer-12096922
-  password: { type: String, required: true, select: false },
+    // Using 'select' to avoid sending password to the front end. Need to use work around in
+    // answer section to overwrite this feature
+    // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu#answer-12096922
+    password: { type: String, required: true, select: false },
 
-  role: { type: String, required: true },
-});
+    role: { type: String, required: true },
+  },
+  { versionKey: false }
+);
 
 UserSchema.pre("save", function (next) {
   const user = this;

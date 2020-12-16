@@ -1,4 +1,4 @@
-const User = require("../data/schemas/users.schema");
+const User = require("../../data/schemas/users.schema");
 const JWT_KEY = process.env.JWT_KEY;
 const jwt = require("jsonwebtoken");
 
@@ -23,6 +23,13 @@ exports.login = async (req, res) => {
         console.error("Error receiving request. Error:");
         console.error(err);
         res.status(400).send(err);
+        return;
+      }
+
+      if (!isMatch) {
+        console.error("INVALID CREDENTIALS!");
+        res.status(400).send(err);
+        return;
       }
 
       // Attach Token
