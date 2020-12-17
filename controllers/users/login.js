@@ -1,4 +1,4 @@
-const User = require("../data/schemas/users.schema");
+const User = require("../../data/schemas/users.schema");
 const JWT_KEY = process.env.JWT_KEY;
 const jwt = require("jsonwebtoken");
 
@@ -23,15 +23,20 @@ exports.login = async (req, res) => {
         console.error("Error receiving request. Error:");
         console.error(err);
         res.status(400).send(err);
+        return;
       }
 
-      console.log(`${body.password}:`, isMatch);
+      if (!isMatch) {
+        console.error("INVALID CREDENTIALS!");
+        res.status(400).send(err);
+        return;
+      }
 
       // Attach Token
       const token = await jwt.sign({ _id: user._id, role: user.role }, JWT_KEY);
       res.set("auth", token);
       res.set("Access-Control-Expose-Headers", "auth");
-      res.send({ msg: "Successfully Logged In" });
+      res.json(user);
     });
   } catch (err) {
     console.error("Error receiving request. Error:");

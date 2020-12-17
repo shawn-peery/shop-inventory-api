@@ -10,7 +10,7 @@ const cors = require("cors");
 const mongooseController = require("./data/mongoose");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users/users");
 
 const authMiddleware = require("./security/authorization.middleware");
 
@@ -26,8 +26,10 @@ mongooseController.connect(app.locals).then(() => {
   initializeData();
 
   // Routes that need access to Mongo Information:
-  const loginRouter = require("./routes/login.js");
-  const registerRouter = require("./routes/register.js");
+  const loginRouter = require("./routes/users/login.js");
+  const registerRouter = require("./routes/users/register.js");
+
+  const profileRouter = require("./routes/users/profile.js");
 
   // view engine setup
   app.set("views", path.join(__dirname, "views"));
@@ -47,6 +49,7 @@ mongooseController.connect(app.locals).then(() => {
 
   app.use("/", authMiddleware);
 
+  app.use(`${API_PREFIX}/users/profile`, profileRouter);
   app.use(`${API_PREFIX}/users`, usersRouter);
 
   const productsRouter = require("./routes/products");
