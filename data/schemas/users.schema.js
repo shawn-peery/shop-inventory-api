@@ -6,7 +6,12 @@ const SALT_WORK_FACTOR = 10;
 const UserSchema = new Schema(
   {
     username: { type: String, required: true, index: { unique: true } },
-    email: { type: String, required: true, index: { unique: true } },
+    email: {
+      type: String,
+      required: true,
+      select: false,
+      index: { unique: true },
+    },
 
     // Using 'select' to avoid sending password to the front end. Need to use work around in
     // answer section to overwrite this feature
